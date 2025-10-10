@@ -8,7 +8,7 @@ import java.sql.*;
 
 public class MainServlet extends HttpServlet {
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response)
+ /*   public void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException, RuntimeException {
 
 
@@ -40,5 +40,51 @@ public class MainServlet extends HttpServlet {
             throw new RuntimeException(e);
         }
 
+    }*/
+
+    public void doGet(HttpServletRequest request, HttpServletResponse response)
+
+    throws  ServletException, IOException, RuntimeException{
+        ServletOutputStream servletOutputStream = response.getOutputStream();
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection connectionString = DriverManager.getConnection("jdbc:mysql://localhost:3306/friday","root","");
+
+            String sqlStatement = "Select * From CarDetails";
+
+            PreparedStatement preparedStatement = connectionString.prepareStatement(sqlStatement);
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+            response.setContentType("text/html");
+            response.setStatus(HttpServletResponse.SC_OK);
+
+            while(resultSet.next()){
+                servletOutputStream.println("Data found");
+                servletOutputStream.println(resultSet.getInt(1)+" "+
+                        resultSet.getString(2)+" "+
+                        resultSet.getInt(3)+ " "+
+                        resultSet.getString(4) );
+                servletOutputStream.println("\n");
+            }
+            /*if(!resultSet.next()){
+                servletOutputStream.println("No data found");
+            }
+            else{
+                servletOutputStream.println("Data found");
+                servletOutputStream.println(resultSet.getInt(1)+" "+
+                  resultSet.getString(2)+" "+
+                        resultSet.getInt(3)+ " "+
+                        resultSet.getString(4));
+
+            }*/
+        } catch (ClassNotFoundException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
+
+
     }
+
+
 }
